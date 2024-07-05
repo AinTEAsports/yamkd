@@ -4,20 +4,18 @@ mod parser;
 mod executer;
 mod filenode;
 
-fn main() -> std::io::Result<()> {
-    // NOTE: INVALIDATE PATHS THAT START WITH A '/' TO NOT MESS UP WITH LINUX ROOT FOLDER
-    // NOTE: WHEN THERE IS A 'INNER_SEPARATOR' JUST BEFORE CLOSING A PARENTHESIS, IT CRASHES
-
+fn main() {
     let argv = std::env::args().collect::<Vec<String>>();
 
-    if argv.len() == 1 { return Ok(()); }
+    if argv.len() == 1 { return; }
 
     let arg = argv[1..].iter()
         .map(|s| s.as_str())
         .collect::<Vec<&str>>()
         .join(" ");
 
-    executer::parse_and_execute(arg);
-
-    Ok(())
+    match utils::is_valid_expression(arg.as_str()) {
+        Ok(_) => executer::parse_and_execute(arg),
+        Err(e) => println!("[ERROR] {}", e)
+    }
 }

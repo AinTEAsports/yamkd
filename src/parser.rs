@@ -1,54 +1,39 @@
 use crate::filenode::FileNode;
+use crate::utils;
 
 pub const OUTER_SEPARATOR: char = '/';
 pub const INNER_SEPARATOR: char = ',';
 
 fn expression_to_singlevec(expr: String) -> Vec<String> {
-    /* Converts an expression to a singlevec
-     * 
-     * Example:
-     * "dir1/(dir2.1,dir2.2)/(file1.1,file1.2)" => vec!["dir1", "(dir2.1,dir2.2)", "(file1.1,file1.2)"]
-     * "dir1/(dir2.1,dir2.2)/(file1.1,file1.2)/" => vec!["dir1", "(dir2.1,dir2.2)", "(file1.1,file1.2)/"]
-     */
-
-    let expression = expr.as_str();
-    let tmp: Vec<&str> = expression.split(OUTER_SEPARATOR).filter(|s| !s.is_empty()).collect();
-    let mut result: Vec<String> = vec![];
-
-    // NOTE: copy and modify the last one to check if it is a dir or not
-    for (i, s) in tmp.iter().enumerate() {
-        if i == tmp.len() - 1 {
-            result.push(
-                if get(expression, expression.len() - 1) != Some(OUTER_SEPARATOR) { String::from(*s) }
-                else { format!("{}{}", s, OUTER_SEPARATOR) }
-            );
-        }
-        else { result.push(String::from(*s)); }
-    }
-
-    result
+    let positions = utils::find_indexes(expr.as_str(), OUTER_SEPARATOR).unwrap();
+    utils::split_at(expr, positions)
 }
 
 fn get(s: &str, i: usize) -> Option<char> { s.chars().nth(i) }
 pub fn gets(s: String, i: usize) -> Option<char> { s.chars().nth(i) }
 
 fn multiunit_to_singleunit(multiunit: &str) -> Option<Vec<FileNode>> {
-    // NOTE: check if it is between parenthesis, then split by 'INNER_SEPARATOR' then collect to a
-    // vec
-
     match (get(multiunit, 0), get(multiunit, multiunit.len() - 2), get(multiunit, multiunit.len() - 1)) {
         (Some('('), Some(')'), Some(OUTER_SEPARATOR)) => {
+            println!("[DEBUG.multiunit_to_singleunit.CASE='()/'] {:?}", multiunit);
+
             let mut chars = multiunit.chars();
             chars.next_back();
 
-            multiunit_to_singleunit(chars.as_str())
+            match multiunit_to_singleunit(chars.as_str()) {
+                Some(v) => Some(v.iter().map(|file| FileNode::new(file.name.clone(), true)).collect()),
+                None => None
+            }
         }
         (Some('('), _, Some(')')) => {
+            println!("[DEBUG.multiunit_to_singleunit.CASE='(_)'] {:?}", multiunit);
             let stripped_multiunit = &multiunit[1..multiunit.len() - 1];
+            let positions = utils::find_indexes(stripped_multiunit, INNER_SEPARATOR).unwrap();
 
             Some(
-                stripped_multiunit
-                    .split(INNER_SEPARATOR)
+                utils::split_at(stripped_multiunit.to_string(), positions)
+                .iter()
+                    .filter(|s| !s.is_empty())
                     // .map(|s| FileNode { name: String::from(s), is_dir: true })
                     .map(|s| FileNode::new(String::from(s), true))
                     .collect()
@@ -60,6 +45,8 @@ fn multiunit_to_singleunit(multiunit: &str) -> Option<Vec<FileNode>> {
 
 
 fn singlevec_to_multivec(singlevec: Vec<String>) -> Vec<Vec<FileNode>> {
+    println!("[DEBUG.singlevec_to_multivec] {:?}", singlevec);
+
     let mut tmp: Vec<Vec<FileNode>> = vec![];
     let mut result: Vec<Vec<FileNode>> = vec![];
 

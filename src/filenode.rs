@@ -20,7 +20,7 @@ impl FileNode {
                     Err(_) => Err(format!("could not create file '{}'", self.name))
                 }
             } else {
-                match std::fs::create_dir(&self.name) {
+                match std::fs::create_dir_all(&self.name) {
                     Ok(_) => Ok(()),
                     Err(_) => Err(format!("could not creare folder '{}'", self.name))
                 }
