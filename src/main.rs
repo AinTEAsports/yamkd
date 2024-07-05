@@ -14,6 +14,8 @@ fn main() {
         .collect::<Vec<&str>>()
         .join(" ");
 
+    // println!("{:#?}", parser::parse_expression(arg));
+
     match utils::is_valid_expression(arg.as_str()) {
         Ok(_) => executer::parse_and_execute(arg),
         Err(e) => println!("[ERROR] {}", e)

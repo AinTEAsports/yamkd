@@ -15,6 +15,8 @@ fn execute_multivec(v: Vec<Vec<FileNode>>) {
     let tail = v[1..].to_vec();
 
     for file in head {
+        println!("[DEBUG.exec_multivec] file={}, v={:?}", file.name, tail);
+
         match &file.create() {
             Ok(_) => (),
             Err(e) => {
@@ -26,6 +28,8 @@ fn execute_multivec(v: Vec<Vec<FileNode>>) {
         if file.is_dir {
             let absolute_path_result = std::env::current_dir();
 
+            println!("[DEBUG] absolute_path_result={:?}", absolute_path_result);
+
             if absolute_path_result.is_err() {
                 println!("COULD NOT GET CURRENT DIRECTORY");
                 continue;
@@ -34,10 +38,11 @@ fn execute_multivec(v: Vec<Vec<FileNode>>) {
             let abscurr_path = absolute_path_result.unwrap();
             let absolute_path = Path::new(&abscurr_path).join(file.name.clone());
 
-            match std::env::set_current_dir(absolute_path) {
+            match std::env::set_current_dir(absolute_path.clone()) {
                 Ok(_) => {
                     execute_multivec(tail.clone());
-                    let _ = std::env::set_current_dir(std::env::current_dir().unwrap().parent().unwrap());
+                    // let _ = std::env::set_current_dir(std::env::current_dir().unwrap().parent().unwrap());
+                    let _ = std::env::set_current_dir(Path::new(&absolute_path).join(".."));
                 }
                 Err(_) => println!("COULD NOT CD INTO '{}'", file.name)
             }
