@@ -67,7 +67,6 @@ fn singlevec_to_multivec(singlevec: Vec<String>) -> Vec<Vec<FileNode>> {
         match multiunit_to_singleunit(s.as_str()) {
             Some(v) => tmp.push(v),
             None => {
-                // tmp.push(vec![FileNode { name: s, is_dir: true }]);
                 tmp.push(vec![FileNode::new(s, true)]);
             }
         }
@@ -77,8 +76,6 @@ fn singlevec_to_multivec(singlevec: Vec<String>) -> Vec<Vec<FileNode>> {
 
     for (i, filevec) in tmp.iter().enumerate() {
         if i == tmp.len() - 1 {
-            // println!("[DEBUG.singlevec_to_multivec()] {:?}", filevec);
-
             result.push(
                 filevec.iter().map(|file| {
                     FileNode::new(
@@ -100,9 +97,6 @@ pub fn parse_expression(expr: String) -> Vec<Vec<FileNode>> {
     let second = singlevec_to_multivec(first.clone());
 
     let mut result: Vec<Vec<FileNode>> = vec![];
-
-    // println!("[DEBUG.parse_expression().first] {:?}", first);
-    // println!("[DEBUG.parse_expression().second] {:?}", second);
 
     for (i, filevec) in second.iter().enumerate() {
         if i == second.len() - 1 {
