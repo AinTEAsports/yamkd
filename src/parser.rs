@@ -1,35 +1,9 @@
-use logos::Source;
+use crate::filenode::FileNode;
 
-const OUTER_SEPARATOR: char = '/';
-const INNER_SEPARATOR: char = ',';
+pub const OUTER_SEPARATOR: char = '/';
+pub const INNER_SEPARATOR: char = ',';
 
-#[derive(Debug, Clone)]
-pub struct FileNode {
-    pub name: String,
-    pub is_dir: bool,
-}
-
-impl FileNode {
-    pub fn new(name: String, is_dir: bool) -> Self {
-        // println!("[FILENODE] is_dir={}", is_dir);
-
-        let len = name.len();
-        let mut processed = name.clone();
-
-        if gets(name, len-1) == Some(OUTER_SEPARATOR) { processed.truncate(len-1); }
-
-        FileNode {
-            name: processed,
-            is_dir,
-        }
-
-        // FileNode { name, is_dir }
-    }
-}
-
-
-
-fn expression_to_singlevec(expression: &str) -> Vec<String> {
+fn expression_to_singlevec(expr: String) -> Vec<String> {
     /* Converts an expression to a singlevec
      * 
      * Example:
@@ -37,6 +11,7 @@ fn expression_to_singlevec(expression: &str) -> Vec<String> {
      * "dir1/(dir2.1,dir2.2)/(file1.1,file1.2)/" => vec!["dir1", "(dir2.1,dir2.2)", "(file1.1,file1.2)/"]
      */
 
+    let expression = expr.as_str();
     let tmp: Vec<&str> = expression.split(OUTER_SEPARATOR).filter(|s| !s.is_empty()).collect();
     let mut result: Vec<String> = vec![];
 
@@ -55,7 +30,7 @@ fn expression_to_singlevec(expression: &str) -> Vec<String> {
 }
 
 fn get(s: &str, i: usize) -> Option<char> { s.chars().nth(i) }
-fn gets(s: String, i: usize) -> Option<char> { s.chars().nth(i) }
+pub fn gets(s: String, i: usize) -> Option<char> { s.chars().nth(i) }
 
 fn multiunit_to_singleunit(multiunit: &str) -> Option<Vec<FileNode>> {
     // NOTE: check if it is between parenthesis, then split by 'INNER_SEPARATOR' then collect to a
@@ -119,8 +94,9 @@ fn singlevec_to_multivec(singlevec: Vec<String>) -> Vec<Vec<FileNode>> {
 }
 
 
-pub fn parse_expression(expression: &'static str) -> Vec<Vec<FileNode>> {
-    let first = expression_to_singlevec(expression);
+pub fn parse_expression(expr: String) -> Vec<Vec<FileNode>> {
+    let expression = expr.as_str();
+    let first = expression_to_singlevec(expr.clone());
     let second = singlevec_to_multivec(first.clone());
 
     let mut result: Vec<Vec<FileNode>> = vec![];
