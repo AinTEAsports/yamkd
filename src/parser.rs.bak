@@ -1,0 +1,89 @@
+use logos::Source;
+
+#[derive(Debug, Copy, Clone)]
+pub struct FileNode {
+    pub name: &'static str,
+    pub is_dir: bool,
+}
+
+
+const OUTER_SEPARATOR: char = '/';
+const INNER_SEPARATOR: char = ',';
+
+fn expression_to_singlevec(expression: &str) -> Vec<&str> {
+    expression.split(OUTER_SEPARATOR).collect()
+}
+
+fn get(s: &str, i: usize) -> Option<char> { s.chars().nth(i) }
+
+fn multiunit_to_singleunit(multiunit: &'static str) -> Option<Vec<FileNode>> {
+    // NOTE: check if it is between parenthesis, then split by 'INNER_SEPARATOR' then collect to a
+    // vec
+
+    match (get(multiunit, 0), get(multiunit, multiunit.len() - 1)) {
+        (Some('('), Some(')')) => {
+            let stripped_multiunit = &multiunit[1..multiunit.len() - 1];
+
+            // Some(stripped_multiunit.split(INNER_SEPARATOR).collect())
+
+            Some(
+                stripped_multiunit
+                    .split(INNER_SEPARATOR)
+                    .map(|s| FileNode { name: s, is_dir: true })
+                    .collect()
+            )
+        }
+        _ => None
+    }
+}
+
+
+fn singlevec_to_multivec(singlevec: Vec<&'static str>) -> Vec<Vec<FileNode>> {
+    // let mut result: Vec<Vec<FileNode>> = singlevec.iter()
+    //     .map(|s| {
+    //         match multiunit_to_singleunit(s) {
+    //             Some(v) => v,
+    //             None => vec![FileNode { name: s, is_dir: true }],
+    //         }
+    //     })
+    //     .collect();
+    //
+    // result[result.len()-1] = result[result.len()-1].iter()
+    //     .map(|file| {
+    //         FileNode {
+    //             name: file.name,
+    //             is_dir: get(file.name, file.name.len()-1) == Some(OUTER_SEPARATOR)
+    //         }
+    //     }).collect();
+    //
+    // result
+
+    let mut result = vec![];
+
+    for (i, s) in singlevec.iter().enumerate() {
+        match multiunit_to_singleunit(s) {
+            Some(v) => result.push(v),
+            None => {
+                result.push(vec![FileNode { name: s, is_dir: true }]);
+            }
+        }
+    }
+
+
+    result[result.len() - 1] = result[result.len() - 1].iter().map(|file| {
+        FileNode {
+            name: file.name,
+            is_dir: get(file.name, file.name.len() - 1) == Some(OUTER_SEPARATOR),
+        }
+    }).collect();
+
+    result
+}
+
+
+pub fn parse_expression(expression: &'static str) -> Vec<Vec<FileNode>> {
+    let first = expression_to_singlevec(expression);
+    let second = singlevec_to_multivec(first);
+
+    second
+}
