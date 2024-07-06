@@ -1,9 +1,8 @@
-# yamkd
-Yet Another MKdir/Touch
+# Yet Another MKdir/Touch
 
 ---
 
-### YAMKT is a mkdir/touch replacement, that basically does what `mkdir -p` does but a bit more sophisticated
+#### YAMKT is a mkdir/touch replacement,  is basically is a `mkdir -p` but more sophisticated
 
 ---
 
@@ -13,14 +12,14 @@ Here are some examples and the folder architecture after executing the commands
 (all the base folders are considered empty before executing the command):
 
 ```sh
-$ yamkd "dir1/dir2/file1.txt"
+$ yamkt "dir1/dir2/file1.txt"
 $ tree
 dir1/
   file1.txt
 ```
 
 ```sh
-$ yamkd "(dir1.1,dir1.2)/file1.txt"
+$ yamkt "(dir1.1,dir1.2)/file1.txt"
 $ tree
 dir1.1/
   file1.txt
@@ -29,7 +28,7 @@ dir1.2/
 ```
 
 ```sh
-$ yamkd "dir1/(file1.txt,file2.txt)"
+$ yamkt "dir1/(file1.txt,file2.txt)"
 $ tree
 dir1/
   file1.txt
@@ -37,7 +36,7 @@ dir1/
 ```
 
 ```sh
-$ yamkd "dir1/dir2/(dir3.1,dir3.2)/"
+$ yamkt "dir1/dir2/(dir3.1,dir3.2)/"
 $ tree
 dir1/
   dir2/
@@ -46,7 +45,7 @@ dir1/
 ```
 
 ```sh
-$ yamkd "(dir1.1,dir1.2)/(file1.txt,file2.txt)"
+$ yamkt "(dir1.1,dir1.2)/(file1.txt,file2.txt)"
 $ tree
 dir1.1/
   file1.txt
@@ -57,7 +56,7 @@ dir1.2/
 ```
 
 ```sh
-$ yamkd "dir1/(dir2,dir3/file1.txt)/dir4/file2.txt"
+$ yamkt "dir1/(dir2,dir3/file1.txt)/dir4/file2.txt"
 $ tree
 dir1/
   dir2/
