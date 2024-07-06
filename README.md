@@ -2,7 +2,7 @@
 
 ---
 
-#### YAMKT is a mkdir/touch replacement,  is basically is a `mkdir -p` but more sophisticated
+ ### YAMKT is a mkdir/touch replacement, it basically is a `mkdir -p` but more sophisticated
 
 ---
 
