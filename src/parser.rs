@@ -15,8 +15,6 @@ pub fn gets(s: String, i: usize) -> Option<char> { s.chars().nth(i) }
 fn multiunit_to_singleunit(multiunit: &str) -> Option<Vec<FileNode>> {
     match (get(multiunit, 0), get(multiunit, multiunit.len() - 2), get(multiunit, multiunit.len() - 1)) {
         (Some('('), Some(')'), Some(OUTER_SEPARATOR)) => {
-            // println!("[DEBUG.multiunit_to_singleunit.CASE='()/'] {:?}", multiunit);
-
             let mut chars = multiunit.chars();
             chars.next_back();
 
@@ -26,7 +24,6 @@ fn multiunit_to_singleunit(multiunit: &str) -> Option<Vec<FileNode>> {
             }
         }
         (Some('('), _, Some(')')) => {
-            // println!("[DEBUG.multiunit_to_singleunit.CASE='(_)'] {:?}", multiunit);
             let stripped_multiunit = &multiunit[1..multiunit.len() - 1];
             let positions = utils::find_indexes(stripped_multiunit, INNER_SEPARATOR).unwrap();
 
@@ -34,7 +31,6 @@ fn multiunit_to_singleunit(multiunit: &str) -> Option<Vec<FileNode>> {
                 utils::split_at(stripped_multiunit.to_string(), positions)
                 .iter()
                     .filter(|s| !s.is_empty())
-                    // .map(|s| FileNode { name: String::from(s), is_dir: true })
                     .map(|s| FileNode::new(String::from(s), true))
                     .collect()
             )
@@ -45,8 +41,6 @@ fn multiunit_to_singleunit(multiunit: &str) -> Option<Vec<FileNode>> {
 
 
 fn singlevec_to_multivec(singlevec: Vec<String>) -> Vec<Vec<FileNode>> {
-    println!("[DEBUG.singlevec_to_multivec] {:?}", singlevec);
-
     let mut tmp: Vec<Vec<FileNode>> = vec![];
     let mut result: Vec<Vec<FileNode>> = vec![];
 

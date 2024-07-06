@@ -23,8 +23,6 @@ impl FileNode {
 
                 let (folder, _) = &self.name.split_at(lasti);
 
-                // println!("[DEBUG.FileNode.create()] folder: {} file: {}", folder, file);
-
                 return match FileNode::new(folder.to_string(), true).create() {
                     Ok(_) => self.create_file_nocheck(),
                     Err(e) => Err(e)
@@ -32,15 +30,11 @@ impl FileNode {
             }
 
             if !self.is_dir && self.name.chars().nth(self.name.len()-1).unwrap() != OUTER_SEPARATOR {
-                println!("IS DIR: {}", self.name);
-
                 match File::create(&self.name) {
                     Ok(_) => Ok(()),
                     Err(_) => Err(format!("could not create file {}'{}'", abscurrpath, self.name))
                 }
             } else {
-                println!("IS DIR: {}", self.name);
-
                 match std::fs::create_dir_all(&self.name) {
                     Ok(_) => Ok(()),
                     Err(_) => Err(format!("could not creare folder {}'{}'", abscurrpath, self.name))
