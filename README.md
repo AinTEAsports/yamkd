@@ -15,16 +15,17 @@ Here are some examples and the folder architecture after executing the commands
 $ yamkt "dir1/dir2/file1.txt"
 $ tree
 dir1/
-  file1.txt
+  dir2/
+    file1.txt
 ```
 
 ```sh
-$ yamkt "(dir1.1,dir1.2)/file1.txt"
+$ yamkt "(dir1.1,dir1.2)/file.txt"
 $ tree
 dir1.1/
-  file1.txt
+  file.txt
 dir1.2/
-  file1.txt
+  file.txt
 ```
 
 ```sh
