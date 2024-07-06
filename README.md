@@ -70,10 +70,10 @@ dir1/
 ---
 
 ## Important:
-Expressions cannot start with a `/`
-Expressions should not contains two consecutive `/`
+Expressions cannot start with a `/`</br>
+Expressions should not contains two consecutive `/`</br>
 
-The outer separator is `/`
-The inner separator (to separate files or directories in parenthesis) is `,`
+The outer separator is `/`</br>
+The inner separator (to separate files or directories in parenthesis) is `,`</br>
 
-Therefore, you can't create files or folders with a `/` nor with a `,` in their name
+Therefore, you can't create files or folders with a `/` nor with a `,` in their name</br>
