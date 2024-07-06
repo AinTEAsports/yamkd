@@ -1,4 +1,6 @@
 use std::fs::File;
+use crate::parser::OUTER_SEPARATOR;
+use crate::utils::get_lastindex;
 
 #[derive(Debug, Clone)]
 pub struct FileNode {
@@ -12,19 +14,45 @@ impl FileNode {
     }
 
     pub fn create(&self) -> Result<(), String> {
+        let abscurrpath = std::env::current_dir().unwrap().display().to_string();
+
         if std::path::Path::new(&self.name).exists() { Ok(()) }
         else {
-            if !self.is_dir {
-                match File::create(&self.name) {
-                    Ok(_) => Ok(()),
-                    Err(_) => Err(format!("could not create file '{}'", self.name))
-                }
-            } else {
-                match std::fs::create_dir_all(&self.name) {
-                    Ok(_) => Ok(()),
-                    Err(_) => Err(format!("could not creare folder '{}'", self.name))
+            if self.name.contains(OUTER_SEPARATOR) && self.name.chars().nth(self.name.len()-1).unwrap() != OUTER_SEPARATOR {
+                let lasti = get_lastindex(&self.name, OUTER_SEPARATOR).unwrap();
+
+                let (folder, _) = &self.name.split_at(lasti);
+
+                // println!("[DEBUG.FileNode.create()] folder: {} file: {}", folder, file);
+
+                return match FileNode::new(folder.to_string(), true).create() {
+                    Ok(_) => self.create_file_nocheck(),
+                    Err(e) => Err(e)
                 }
             }
+
+            if !self.is_dir && self.name.chars().nth(self.name.len()-1).unwrap() != OUTER_SEPARATOR {
+                println!("IS DIR: {}", self.name);
+
+                match File::create(&self.name) {
+                    Ok(_) => Ok(()),
+                    Err(_) => Err(format!("could not create file {}'{}'", abscurrpath, self.name))
+                }
+            } else {
+                println!("IS DIR: {}", self.name);
+
+                match std::fs::create_dir_all(&self.name) {
+                    Ok(_) => Ok(()),
+                    Err(_) => Err(format!("could not creare folder {}'{}'", abscurrpath, self.name))
+                }
+            }
+        }
+    }
+
+    pub fn create_file_nocheck(&self) -> Result<(), String> {
+        match File::create(&self.name) {
+            Ok(_) => Ok(()),
+            Err(_) => Err(format!("could not create file '{}'", self.name))
         }
     }
 }

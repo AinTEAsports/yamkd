@@ -81,3 +81,12 @@ pub fn is_valid_expression(s: &str) -> Result<(), &str> {
     else if !is_valid_parenthesis(s) { Err("invalid parenthesis") }
     else { Ok(()) }
 }
+
+
+pub fn get_lastindex(s: &str, c: char) -> Option<usize> {
+    for i in (0..s.len()).rev() {
+        if s.chars().nth(i).unwrap() == c { return Some(i); }
+    }
+
+    None
+}
