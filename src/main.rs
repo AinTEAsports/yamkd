@@ -1,3 +1,5 @@
+use self::utils::error_str;
+
 mod stack;
 mod utils;
 mod parser;
@@ -16,6 +18,6 @@ fn main() {
 
     match utils::is_valid_expression(arg.as_str()) {
         Ok(_) => executer::parse_and_execute(arg),
-        Err(e) => println!("[ERROR] {}", e)
+        Err(e) => println!("{}", error_str(e))
     }
 }

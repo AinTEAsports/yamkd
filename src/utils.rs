@@ -1,9 +1,16 @@
 use crate::stack::Stack;
-use crate::parser::{ INNER_SEPARATOR, OUTER_SEPARATOR };
+use crate::parser::{ get, INNER_SEPARATOR, OUTER_SEPARATOR };
 
 const INVALID_CHARS_COUNT: usize = 1;
 const INVALID_CHARS: [char; INVALID_CHARS_COUNT] = ['/'];
 
+pub fn error_str(msg: &str) -> String {
+    let bold_grey = "\x1b[1;30m";
+    let red = "\x1b[31m";
+    let reset = "\x1b[0m";
+
+    format!("{bold_grey}[{reset}{red}ERROR{reset}{bold_grey}]{reset} {msg}")
+}
 
 fn is_valid_parenthesis(s: &str) -> bool {
     let mut stack: Stack<char> = Stack::new();
@@ -28,6 +35,15 @@ fn contains_any(s: &str, chars: [char; INVALID_CHARS_COUNT]) -> bool {
         for c2 in chars {
             if c == c2 { return true; }
         }
+    }
+
+    false
+}
+
+
+fn contains_two_consecutive(s: &str, c: char) -> bool {
+    for i in 0..s.len()-1 {
+        if get(s, i) == Some(c) && get(s, i+1) == Some(c) { return true; }
     }
 
     false
@@ -77,8 +93,10 @@ pub fn split_at(s: String, positions: Vec<usize>) -> Vec<String> {
 
 pub fn is_valid_expression(s: &str) -> Result<(), &str> {
     if s.is_empty() { Err("empty expression") }
-    else if s.chars().next().unwrap() == '/' { Err("first character cannot be '/'") }
     else if !is_valid_parenthesis(s) { Err("invalid parenthesis") }
+    else if s.chars().next().unwrap() == OUTER_SEPARATOR { Err("first character cannot be '/'") }
+    else if contains_two_consecutive(s, OUTER_SEPARATOR) { Err("cannot contain two consecutive '/'") }
+    else if contains_two_consecutive(s, INNER_SEPARATOR) { Err("cannot contain two consecutive ','") }
     else { Ok(()) }
 }
 

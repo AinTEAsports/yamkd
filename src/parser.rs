@@ -9,7 +9,7 @@ fn expression_to_singlevec(expr: String) -> Vec<String> {
     utils::split_at(expr, positions)
 }
 
-fn get(s: &str, i: usize) -> Option<char> { s.chars().nth(i) }
+pub fn get(s: &str, i: usize) -> Option<char> { s.chars().nth(i) }
 pub fn gets(s: String, i: usize) -> Option<char> { s.chars().nth(i) }
 
 fn multiunit_to_singleunit(multiunit: &str) -> Option<Vec<FileNode>> {
