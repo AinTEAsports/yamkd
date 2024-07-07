@@ -1,5 +1,6 @@
 use crate::parser::parse_expression;
 use crate::filenode::FileNode;
+use crate::utils::error_str;
 
 use std::path::Path;
 
@@ -19,7 +20,7 @@ fn execute_multivec(v: Vec<Vec<FileNode>>) {
         match &file.create() {
             Ok(_) => (),
             Err(e) => {
-                println!("{}", e);
+                println!("{}", error_str(e));
                 continue;
             }
         }

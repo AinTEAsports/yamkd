@@ -37,7 +37,7 @@ impl FileNode {
             } else {
                 match std::fs::create_dir_all(&self.name) {
                     Ok(_) => Ok(()),
-                    Err(_) => Err(format!("could not creare folder {}'{}'", abscurrpath, self.name))
+                    Err(_) => Err(format!("could not create folder '{}' in supposingly existing folder '{}'", self.name, abscurrpath))
                 }
             }
         }
