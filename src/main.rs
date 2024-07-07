@@ -7,17 +7,14 @@ mod executer;
 mod filenode;
 
 fn main() {
-    let argv = std::env::args().collect::<Vec<String>>();
+    let argv = &std::env::args().collect::<Vec<String>>()[1..];
 
-    if argv.len() == 1 { return; }
+    if argv.len() == 0 { return; }
 
-    let arg = argv[1..].iter()
-        .map(|s| s.as_str())
-        .collect::<Vec<&str>>()
-        .join(" ");
-
-    match utils::is_valid_expression(arg.as_str()) {
-        Ok(_) => executer::parse_and_execute(arg),
-        Err(e) => println!("{}", error_str(e))
+    for arg in argv {
+        match utils::is_valid_expression(arg) {
+            Ok(_) => executer::parse_and_execute(arg.clone()),
+            Err(e) => println!("{}", error_str(e))
+        }
     }
 }
