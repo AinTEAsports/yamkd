@@ -95,8 +95,8 @@ pub fn is_valid_expression(s: &str) -> Result<(), &str> {
     if s.is_empty() { Err("empty expression") }
     else if !is_valid_parenthesis(s) { Err("invalid parenthesis") }
     else if s.chars().next().unwrap() == OUTER_SEPARATOR { Err("first character cannot be '/'") }
-    else if contains_two_consecutive(s, OUTER_SEPARATOR) { Err("cannot contain two consecutive '/'") }
-    else if contains_two_consecutive(s, INNER_SEPARATOR) { Err("cannot contain two consecutive ','") }
+    else if s.contains("//") { Err("cannot contain two consecutive '/'") }
+    else if s.contains(",,") { Err("cannot contain two consecutive ','") }
     else { Ok(()) }
 }
 
