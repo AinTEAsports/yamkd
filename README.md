@@ -77,3 +77,14 @@ The outer separator is `/`</br>
 The inner separator (to separate files or directories in parenthesis) is `,`</br>
 
 Therefore, you can't create files or folders with a `/` nor with a `,` in their name</br>
+
+
+---
+
+## WARNING:
+Watch out what you run, this can easily take up a lot of space quickly.</br>
+For example:
+```sh
+$ yamkt "(dir1,dir2)/(dir3,dir4)/(dir5,dir6)/(dir7,dir8)/(dir9,dir10)/(dir11,dir12)/(dir13,dir14)/(dir15,dir16)/(dir17,dir18)/(dir19,dir20)/(dir21,dir22)/(dir23,dir24)/(dir25,dir26)/(dir27,dir28)/(dir29,dir30)/(dir31,dir32)/(dir33,dir34)/(dir35,dir36)/(dir37,dir38)/(dir39,dir40)/"
+```
+</br>Creates about 20 millions directories, or 80GB of space taken
